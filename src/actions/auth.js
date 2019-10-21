@@ -74,7 +74,20 @@ export const loginUser = (email, password) => (dispatch) => {
         });
 };
 
-//looks for a preexisting user session and re-establishes it. this will happen on refresh.
+export const logoutUser = () => (dispatch) => {
+    dispatch(requestLogout());
+    myFirebase
+        .auth()
+        .signOut()
+        .then(() => {
+            dispatch(receiveLogout());
+        })
+        .catch((error) => {
+            //Do something with the error if you want!
+            dispatch(logoutError());
+        });
+};
+
 export const verifyAuth = () => (dispatch) => {
     dispatch(verifyRequest());
     myFirebase.auth().onAuthStateChanged((user) => {
