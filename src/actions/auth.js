@@ -59,3 +59,28 @@ const verifySuccess = () => {
         type: VERIFY_SUCCESS,
     };
 };
+
+export const loginUser = (email, password) => (dispatch) => {
+    dispatch(requestLogin());
+    myFirebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((user) => {
+            dispatch(receiveLogin(user));
+        })
+        .catch((error) => {
+            //Do something with the error if you want!
+            dispatch(loginError());
+        });
+};
+
+//looks for a preexisting user session and re-establishes it. this will happen on refresh.
+export const verifyAuth = () => (dispatch) => {
+    dispatch(verifyRequest());
+    myFirebase.auth().onAuthStateChanged((user) => {
+        if (user !== null) {
+            dispatch(receiveLogin(user));
+        }
+        dispatch(verifySuccess());
+    });
+};
